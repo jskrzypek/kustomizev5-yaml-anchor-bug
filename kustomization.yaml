@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - cm1.yaml
+  - cm2.yaml
+
+replacements:
+  - source: &source
+      version: v1
+      kind: ConfigMap
+      name: cm1
+      fieldPath: data.key1
+    targets:
+      - select: &select
+          version: v1
+          kind: ConfigMap
+          name: cm2
+        options:
+          create: true
+        fieldPaths:
+          - .data.keya
+  - source:
+      <<: *source
+      fieldPath: data.key2
+    targets:
+      - select: *select
+        options:
+          create: true
+        fieldPaths:
+          - .data.keyb
+  - source:
+      <<: *source
+      fieldPath: data.key2
+    targets:
+      - select: *select
+        options:
+          create: true
+        fieldPaths:
+          - .data.keyc
